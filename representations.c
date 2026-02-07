@@ -15,11 +15,11 @@ void show_int(int x ) {
 }
 
 void show_float(float x ) {
-    show_B((byte_pointer)&x, sizeof(int)); 
+    show_B((byte_pointer)&x, sizeof(float)); 
 }
 
 void show_p(void * x) {
-    show_B((byte_pointer)&x, sizeof(int));
+    show_B((byte_pointer)&x, sizeof(void *));
 }
 
 void test(unsigned val) {
@@ -212,3 +212,13 @@ write a c expr for x == y:
 
 
 */
+
+//problem 2.16 
+
+/*
+x = 0xc3 = 1100 0011 
+x << 3 = 0001 0100
+x >> 2 logical = 0011 0000
+x >> 2 arith = 1111 0000 
+*/
+
