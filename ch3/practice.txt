@@ -1,0 +1,31 @@
+Assume the following hexadecimal values are stored at the indicated memory addresses and registers:
+Address 	+0 	+1 	+2 	+3 	+4 	+5 	+6 	+7
+	0x0000 	E0 	EA 	64 	D4 	CE 	66 	55 	7C
+	0x0008 	95 	48 	78 	C3 	3F 	97 	86 	39
+	0x0010 	BA 	88 	F3 	5F 	79 	23 	F9 	52
+	0x0018 	13 	71 	EC 	34 	61 	9A 	28 	CC
+	0x0020 	B1 	0F 	E3 	EF 	5E 	9F 	0C 	F8
+	0x0028 	7D 	DB 	16 	24 	2C 	8E 	AE 	CF
+
+	 
+Register 	Value
+%rax 	0000000000000008
+%rcx 	0000000000000003
+%rdx 	0000000000000000
+
+Fill in the following table showing the value for the indicated register after each mov instruction. Assume that the instructions are part of a program, and that they are executed sequentially from top to bottom.
+Instruction 	%rdx in Hexadecimal
+movq (%rax), %rdx -  39 86 97 3f c3 78 48 95      	
+movw (, %rcx, 2), %dx  - 39 86 97 3f c3 78 7c 55
+movw 0x2, %dx 	- 39 86 97 3f c3 78 d4 64
+movb 0x4(%rax), %dl -39 86 97 3f c3 78 d4 3f
+movq 0x2(%rax, %rcx), %rdx - 79 5f f3 88 ba 39 86 97
+movb (%rax, %rcx), %dl 	- 79 5f f3 88 ba 39 86 C3
+movw 0x3(, %rcx, 0x2), %dx - 79 5f f3 88 ba 39 78 48 	
+movb (%rax, %rcx, 0x4), %dl - 79 5f f3 88 ba 39 78 79	
+movq 0x8(%rax, %rcx, 0x8), %rdx - cf ae 8e 2c 24 16 db 7d	
+movl 0x7(%rax, %rcx, 0x4), %edx - 00 00 00 00 28 9a 61 34
+
+mov1 src , dest (32bit) will automatically clear the upper 32 bits of dest	
+
+Important: Use the appropriate bit width when expressing the value of %rdx in hexadecimal.
