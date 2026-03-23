@@ -1,29 +1,41 @@
 Assume the following hexadecimal values are stored at the indicated memory addresses, and registers:
 Address 	+0 	+1 	+2 	+3 	+4 	+5 	+6 	+7
-0x0100 	02 	F0 	89 	44 	CA 	1F 	B5 	30
-0x0108 	0F 	15 	8F 	B7 	DC 	CC 	F3 	25
-0x0110 	0B 	77 	19 	51 	5B 	43 	B8 	9D
-0x0118 	64 	81 	E7 	6F 	69 	59 	34 	76
-0x0120 	B6 	82 	39 	C4 	90 	27 	B2 	71
-0x0128 	A5 	E4 	63 	2E 	FA 	47 	E5 	94
+	0x0100 	02 	F0 	89 	44 	CA 	1F 	B5 	30
+	0x0108 	0F 	15 	8F 	B7 	DC 	CC 	F3 	25
+	0x0110 	0B 	77 	19 	51 	5B 	43 	B8 	9D
+	0x0118 	64 	81 	E7 	6F 	69 	59 	34 	76
+	0x0120 	B6 	82 	39 	C4 	90 	27 	B2 	71
+	0x0128 	A5 	E4 	63 	2E 	FA 	47 	E5 	94
 
  
-Register 	Value
-%rax 	0000000000000100
-%rcx 	0000000000000002
-%rdx 	0000000000000000
+Register	Value
+%rax	0000000000000100
+%rcx	0000000000000002
+%rdx	0000000000000000
 
 Fill in the following table showing the effects of the following instructions, in terms of both the register or memory location that will be updated and the resulting value. Assume that the instructions are part of a program, and that they are executed sequentially from top to bottom.
-Instruction 	%rdx in Hexadecimal
-leaq 5(%rax, %rcx, 4), %rdx - 0x000000000000010D 	
-orw (%rax, %rcx, 8), %dx 	
-addb $-1, %dl 	
-andw 7(%rax), %dx 	
-negq %rdx 	
-subw 2(%rax, %rcx), %dx 	
-notb %dl 	
-xorb (%rax), %dl 	
-decq %rdx 	
-incl %edx 	
+Instruction	%rdx in Hexadecimal
+leaq 5(%rax, %rcx, 4), %rdx - 	0x000000000000010D
+orw (%rax, %rcx, 8), %dx - 	0x000000000000770f
+# 77 0b =  0111 0111 0000 1011
+# 01 0d =  0000	0001 0000 1101 
+ #	     7   7    0    f 
+addb $-1, %dl - 		0x00000000000770e
+# addb $-1 + 0f = 0e 
+andw 7(%rax), %dx -		0x000000000000700	
+# w - 2B 
+# 7 + 0100 = 0107 - 30
+# 770e & 0f30 
+# 0111 0111 0000 1110
+# 0000 1111 0011 0000 
+#&0000 0111 0000 0000 
+negq %rdx - 			0xffffffffffff8ff
+# ~0x000000000000700 = 0xffffffffffff8ff
+
+subw 2(%rax, %rcx), %dx	
+notb %dl
+xorb (%rax), %dl	
+decq %rdx	
+incl %edx	
 
 Important: Use the appropriate bit width when expressing the value of %rdx in hexadecimal.
