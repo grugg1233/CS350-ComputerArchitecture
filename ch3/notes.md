@@ -1,0 +1,26 @@
+| Instruction    | Exception Flags         | Reasoning                                        | Behavior                                                   |
+| -------------- | ----------------------- | ------------------------------------------------ | ---------------------------------------------------------- |
+| `add`          | none                    | Full arithmetic operation                        | Sets CF, OF, SF, ZF, AF, PF                                |
+| `sub`          | none                    | True subtraction (borrow detection)              | Sets CF, OF, SF, ZF, AF, PF                                |
+| `cmp`          | none                    | Subtraction without storing result               | Sets flags like `sub`                                      |
+| `imul`         | CF, OF only meaningful  | Overflow matters, others undefined               | Sets CF, OF if overflow                                    |
+| `mul`          | CF, OF only             | Unsigned multiply overflow detection             | CF=OF=1 if high part ≠ 0                                   |
+| `inc`          | **CF unchanged**        | Preserve carry for multi-word arithmetic         | Updates all except CF                                      |
+| `dec`          | **CF unchanged**        | Same rationale as `inc`                          | Updates all except CF                                      |
+| `neg`          | special CF behavior     | Equivalent to `0 - x`                            | CF=1 if x≠0, else 0                                        |
+| `and`          | CF, OF cleared          | Logical ops don’t produce carry/overflow         | CF=0, OF=0; others set                                     |
+| `or`           | CF, OF cleared          | Same as `and`                                    | CF=0, OF=0; others set                                     |
+| `xor`          | CF, OF cleared          | No arithmetic carry possible                     | CF=0, OF=0; others set                                     |
+| `test`         | CF, OF cleared          | Like `and` but result discarded                  | CF=0, OF=0; sets SF, ZF, PF                                |
+| `not`          | **all flags unchanged** | Pure bitwise inversion, no arithmetic            | No flags modified                                          |
+| `shl` / `sal`  | OF special case         | Shift is not full arithmetic                     | CF = last bit shifted out; OF only defined for 1-bit shift |
+| `shr`          | OF special case         | Logical shift right                              | CF = last bit shifted out; OF defined only for 1-bit shift |
+| `sar`          | OF cleared (1-bit case) | Arithmetic shift preserves sign                  | CF = last bit shifted out                                  |
+| `rol` / `ror`  | OF special case         | Rotate, not arithmetic                           | CF = rotated bit; OF only for 1-bit rotate                 |
+| `leaq`         | **all flags unchanged** | Address computation only                         | No flags affected                                          |
+| `mov`          | **all flags unchanged** | Data transfer only                               | No flags affected                                          |
+| `push` / `pop` | **all flags unchanged** | Stack operations, not arithmetic                 | No flags affected                                          |
+| `call` / `ret` | **all flags unchanged** | Control flow only                                | No flags affected                                          |
+| `jmp`          | **all flags unchanged** | Unconditional control transfer                   | No flags affected                                          |
+| `cmovXX`       | **reads flags only**    | Conditional move uses flags but doesn’t set them | Flags unchanged                                            |
+| `setXX`        | **reads flags only**    | Writes byte based on flags                       | Flags unchanged                                            |
