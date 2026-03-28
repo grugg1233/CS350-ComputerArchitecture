@@ -1,0 +1,10 @@
+Expression      Type        Value       Assembly Code    
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+E               int *       xe          movq %rdx, %rax 
+E[0]            int         M[xe]       movl (%rdx) , %eax
+E[i]            int         M[xe+ 4i]   movl (%rdx, %rcx, 4), %eax
+&E[2]           int *       xe + 4*2    leaq 8(%rdx), %rax
+E+i-1           int *       xe + 4i - 4 movl -12(%rdx, %rcx, 4) , %eax
+*(E+i-3)        int         M[xe+4i-12] movl -12(%rdx, %rcx, 4) , %eax
+&E[i] - E       long        i           movq %rcx, %rax     
+

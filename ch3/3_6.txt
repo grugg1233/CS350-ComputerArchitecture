@@ -2,9 +2,9 @@ Fill in the following table showing the value for the indicated register
 and condition codes after each instruction. Assume that the instructions 
 are part of a program, and that they are executed sequentially from top to bottom.
 
-                                    u           t
-Instruction	    %rax in Hexadecimal	CF	ZF	SF	OF
-                0x0000000000000000	0	1	0	0
+                                          u           t
+Instruction	    %rax in Hexadecimal	      CF  ZF  SF  OF
+                  0x0000000000000000	0   1   0   0
 mov $0x90, %al	0x0000000000000090	0   1   0   0 	
 
 b=> 1011 
@@ -15,30 +15,37 @@ FC =>  1111 1100
 b7 =>  1011 0111 
 ^      0100 1011 
 
-xor $0xFC, %al	0x000000000000004b  0   0   0   0 				
+xor $0xFC, %al	0x000000000000004b      0   0   0   0 				
 
 4b => 0100 1011
 36 => 0011 0110
 &     0000 0010
-test $0x36, %al	0x000000000000004b  0   0   0   0				
-setge %al		0x0000000000000001  0   0   0   0		
+test $0x36, %al	0x000000000000004b      0   0   0   0				
+setge %al		0x0000000000000001      0   0   0   0		
 
 not is bitwise 
 0xFFFFFFFFFFFFFFFE
 
-not %rax		0xFFFFFFFFFFFFFFFE  0   0   0   0         # does not affect flags       		
-mov $0xF4, %al	0xFFFFFFFFFFFFFFF4  0   0   0   0				
+not %rax		0xFFFFFFFFFFFFFFFE      0   0   0   0         # does not affect flags       		
+mov $0xF4, %al	0xFFFFFFFFFFFFFFF4      0   0   0   0				
 
       1111 1
 F4 => 1111 0100 
 0C => 0000 1100 
       0000 0000
 
-add $0xC, %al	0xFFFFFFFFFFFFFF00  1   1   0   0			
-mov $0xF4, %eax					
-add $0xC, %eax					
-xor %rax, %rax					
-not %rax					
-add $0x1, %ax					
-not %ax					
-add $0x1, %eax					
+add $0xC, %al	0xFFFFFFFFFFFFFF00      1   1   0   0			
+mov $0xF4, %eax	0x00000000000000F4      1   1   0   0	
+         1 1
+0 ... 0000 1100
+0 ... 1111 0100 
+---------------
+0 ...10000 0000
+
+add $0xC, %eax	0x0000000000000100      0   0   0   0		
+xor %rax, %rax	0x0000000000000000      0   1   0   0				
+not %rax		0xFFFFFFFFFFFFFFFF      0   1   0   0			
+
+add $0x1, %ax	0xFFFFFFFFFFFF0000	1   1   0   0	
+not %ax		0xFFFFFFFFFFFFFFFF	1   1   0   0		
+add $0x1, %eax	0x0000000000000000	1   1   0   0			
