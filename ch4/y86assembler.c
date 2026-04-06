@@ -1,16 +1,9 @@
-#include<stdlib.h> 
+#include <stdlib.h> 
 #include <stdio.h> 
+#include "instructions.h"
+#include "registers.h"
 #define MAX_INST_LEN 7 
-// typedef struct {
-//     const char* key;
-//     int value; 
-// } assoc; 
 
-
-// const assoc inst_map[] = {
-//     {}
-
-// };
 
 // const assoc reg_map[] = {
 //     {}
@@ -23,24 +16,33 @@
 //     unsigned char registers; 
 // } Instruction; 
 
+
+
+
+
 void assembly(FILE *fp) 
 {
 
     char ch;
     
+    unsigned char reg_flag = 0, jmp_call_flag = 0;
     
     while (fscanf(fp, "%c", &ch) == 1)
     {
+
+        if (ch == '\n' || ch == ' ' || ch == ':' || ch == ','|| ch == '\r' || ch == '\t' ) continue;
+
         char * word = malloc(sizeof(char) * MAX_INST_LEN);  
         int i = 0; 
         int runningLen = MAX_INST_LEN; 
-        
-        if (ch == '\n' || ch == ' ' || ch == ':') continue;
-        
 
-        while (ch != '\n' && 
+        while (
+               ch != '\n' && 
                ch != ' ' && 
-               ch != ':') 
+               ch != ':' &&
+               ch != ',' && 
+               ch != '%'
+            ) 
         {
 
 
@@ -48,7 +50,7 @@ void assembly(FILE *fp)
                 runningLen <<= 1; 
                 word = realloc(word, runningLen);
             }
-            // printf("%c", ch);
+            
             word[i++] = ch; 
 
             if (fscanf(fp, "%c", &ch) != 1) break; 
@@ -56,8 +58,97 @@ void assembly(FILE *fp)
         } // end word loop
         
         word[i] = '\0';
-        printf("%s", word);
-        printf("%c", ch);
+
+        if( jmp_call_flag )
+        {
+
+            // unsigned char expand = 0x0;
+            // int z = 0;
+            // for (; z < i ; z++) 
+            // {
+            //     if (word[z] == '(') 
+            //     {
+            //         expand = 0x1; 
+            //     }
+            // }
+            // // TODO: check this expansion
+            // if (expand) 
+            // {
+            //     unsigned char outer[z]; 
+            //     unsigned char inner[i-z];
+            //     for(int l = 0; l < z; l++) outer[l] = word[l]; 
+            //     for( int l = z ; l < i ; l++) inner[l] = word[l]; 
+            //     outer[z] = '\0'; 
+            //     inner[i-z] = '\0';
+            // }
+
+            //not expanding then it is a label 
+            printf("%s%c", word,ch);
+            free(word); 
+            jmp_call_flag = 0x0; 
+            continue; 
+        } 
+
+
+
+        // preceeding word is a label 
+        if ( ch == ':' ) 
+        {
+            printf("<%s>%c\n", word,ch);
+            free(word); 
+            continue; 
+        }
+
+
+        // word is instruction 
+        unsigned char op = switch_statement_inst(word); 
+
+        // instruction is jxx or call and thus we can replace the following value with 
+        // label if it is a label or with expansion 
+        if( 
+                (op >> 4) == 0x7 || 
+                (op >> 4) == 0x8
+        ) 
+        {
+            jmp_call_flag = 1; 
+            printf("%02x%c", op, ch); 
+            free(word); 
+            continue; 
+
+        }
+
+
+        if ( ch == '%' ) 
+        {
+            reg_flag = 0x1;
+            free(word); 
+            continue;  
+            
+        }
+        // word is register
+        if (op == 0xff) 
+        {
+            if (reg_flag) 
+            {
+                op = switch_statement_reg(word);
+            //word is either grabage bin register or not a register
+                if (op == 0xf) 
+                {
+                    printf("%s%c", word, ch);
+                    free(word); 
+                    reg_flag = 0x0; 
+                    continue; 
+                }
+
+            }
+
+        }
+
+
+        printf("%02x%c", op, ch);
+        
+        //word is memory requires expansion but since we are not "linking" just do (expand D)(expand Reg)
+
         free(word); 
 
     } // end file loop
@@ -74,7 +165,7 @@ int main (int argc, char ** argv)
     /*
         Opening the file
     */
-    if (argc < 2)
+    if (argc < 3)
     {
         printf("Insufficient arguments \
             [correct usage- ./(prog name) (assembly/obj code file) (mode)] \
@@ -113,7 +204,8 @@ int main (int argc, char ** argv)
         ");
         return 1; 
     }
-
+    printf("\n"); 
+    fclose(asm_file); 
 
     return 0;
 }
